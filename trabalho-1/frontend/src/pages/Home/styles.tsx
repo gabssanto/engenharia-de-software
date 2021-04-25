@@ -72,7 +72,7 @@ export const BottomNavBarItem = styled.a<BottomNavBarItemProps>`
   font-size: 16px;
   font-weight: bold;
   color: ${props => props.active && 'white'};
-  background-color: ${props => props.active ? 'rgb(241,101,34)' : 'white'};
+  background-color: ${props => props.active ? 'rgb(241,101,34)' : '#eee'};
   flex: 1;
   display: flex;
   align-items: center;
