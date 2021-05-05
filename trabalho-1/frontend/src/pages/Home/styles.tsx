@@ -51,28 +51,27 @@ export const OpenedMessageHeader = styled.div`
   justify-content: space-between;
 `;
 
-export const BottomNavBar = styled.div`
+export const NavBar = styled.div`
   background-color: white;
   width: inherit;
-  position: absolute;
   min-height: 5vh;
-  bottom: 0;
   display: flex;
   flex: auto;
   justify-content: space-around;
   background-color: transparent;
 `;
 
-interface BottomNavBarItemProps {
+interface NavBarItemProps {
   active?: boolean;
 }
 
-export const BottomNavBarItem = styled.a<BottomNavBarItemProps>`
+export const NavBarItem = styled.a<NavBarItemProps>`
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
-  color: ${props => props.active && 'white'};
-  background-color: ${props => props.active ? 'rgb(241,101,34)' : '#eee'};
+  color: white;
+  background-color: #272742;
+  border-bottom: 8px solid ${props => props.active ? '#54A0F8' : '#272742'};
   flex: 1;
   display: flex;
   align-items: center;
