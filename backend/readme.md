@@ -19,6 +19,11 @@ Add items to db
 >>> db.session.commit()
 ```
 
+Do a query
+```
+>>> User.query.all()
+```
+
 Drop DB
 
 ```
