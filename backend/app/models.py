@@ -13,11 +13,10 @@ class User(db.Model):
         return '<User {}>'.format(self.username)
 
 
-class Post(db.Model):
+class Kanban(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.String(140))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    items = db.Column(db.String)
+    created_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     def __repr__(self):
-        return '<Post {}>'.format(self.body)
+        return '<Kanban {}>'.format(self.body)

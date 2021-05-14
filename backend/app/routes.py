@@ -1,7 +1,9 @@
+import json
+
 from flask import request
 
 from app import app, db
-import app.controllers.user_controller as user_controller
+from app.controllers import user_controller, kanban_controller
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -14,4 +16,5 @@ def index():
 # TODO: Add model, controllers and routes to kanban
 @app.route('/kanban', methods=['GET'])
 def kanban():
-    return 'kanban'
+    json_data: dict = json.loads(request.data)
+    return kanban_controller.get(db, json_data)
