@@ -1,5 +1,12 @@
 # TL;DR
 
+More practical way to do everything:
+```
+❯ flask db init
+❯ flask db migrate -m {{message}}
+❯ flask db upgrade                 
+```
+
 Create db
 
 ```
