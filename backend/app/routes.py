@@ -11,6 +11,7 @@ def index():
     return user_controller.get(db)
 
 
+# TODO: Add model, controllers and routes to kanban
 @app.route('/kanban', methods=['GET'])
 def kanban():
     return 'kanban'
