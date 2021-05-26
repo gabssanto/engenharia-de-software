@@ -38,15 +38,32 @@ def get(db, data: dict):
 
 def post(db, data: dict):
     try:
-        if 'email' not in data or 'username' not in data or 'password' not in data:
+        if 'type' not in data:
             raise AttributeError
-        user = User(username=data['username'], email=data['email'], password=data['password'])
-        db.session.add(user)
-        db.session.commit()
-        return {
-            'name': user.username,
-            'email': user.email,
-        }, 200
+        # Sign In
+        if data['type'] == 'login':
+            user = db.session.query(User).filter_by(email=data['email']).first()
+            if user is None:
+                raise NoResultFound
+            if 'email' not in data:
+                raise AttributeError
+            if user.password != data['password']:
+                raise InvalidRequestError
+            return {
+                       'name': user.username,
+                       'email': user.email,
+                   }, 200
+        # Sign Up
+        if data['type'] == 'signUp':
+            if 'email' not in data or 'username' not in data or 'password' not in data:
+                raise AttributeError
+            user = User(username=data['username'], email=data['email'], password=data['password'])
+            db.session.add(user)
+            db.session.commit()
+            return {
+                       'name': user.username,
+                       'email': user.email,
+                   }, 200
     except IntegrityError:
         return {'message': 'Username or email already exist'}, 400
     except AttributeError:
@@ -59,7 +76,6 @@ def update(db, data):
             raise AttributeError
         user = db.session.query(User).filter_by(email=data['email']).first()
         user.username = data['username']
-        user.email = data['email']
         user.password = data['password']
         db.session.commit()
         return {

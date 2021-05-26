@@ -15,13 +15,15 @@ def users():
     return user_controller.get_all(db)
 
 
-@app.route('/user', methods=['GET', 'POST', 'UPDATE', 'DELETE'])
+@app.route('/user', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def user():
     data: dict = json.loads(request.data)
     if request.method == 'POST':
         return user_controller.post(db, data)
-    if request.method == 'DELETE':
+    elif request.method == 'DELETE':
         return user_controller.delete(db, data)
+    elif request.method == 'PUT':
+        return user_controller.update(db, data)
     return user_controller.get(db, data)
 
 
