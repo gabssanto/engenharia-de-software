@@ -1,9 +1,13 @@
 import json
 
 from flask import request
+from flask_cors import CORS
 
 from app import app, db
 from app.controllers import user_controller, kanban_controller
+
+
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 
 @app.get('/users')
