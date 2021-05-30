@@ -22,6 +22,7 @@ export const Logout = styled.div`
 
 export const MessagesContainerHeader = styled.div`
   font-size: 16px;
+  cursor: pointer;
   padding: 0 20px;
   height: 10vh;
   width: inherit;

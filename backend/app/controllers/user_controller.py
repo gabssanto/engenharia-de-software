@@ -68,6 +68,8 @@ def post(db, data: dict):
         return {'message': 'Username or email already exist'}, 400
     except AttributeError:
         return {'message': 'Bad Request'}, 400
+    except NoResultFound:
+        return {'message': 'user not found'}, 400
 
 # TODO improve update with validations to update only needed
 def update(db, data):

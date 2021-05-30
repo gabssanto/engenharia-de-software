@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useHistory } from "react-router-dom";
+
 import api from "../../api";
 
 import { Card, Container, RegisterButton, SubmitButton, Title } from './styles';
@@ -8,6 +10,7 @@ const Login: React.FC = () => {
     email: '',
     password: '',
   });
+  const history = useHistory();
 
   const handleForm = ({ value, type }: {value: string, type: string}) => {
     setForm({
@@ -19,12 +22,15 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    const response = await api.post('/users', {
+    const response = await api.post('/user', {
       type: 'login',
       email: form.email,
       password: form.password,
     });
-    localStorage.setItem('session', JSON.stringify(response.data));
+    if (response.data.email === form.email) {
+      localStorage.setItem('user', JSON.stringify(response.data));
+      history.push('/home');
+    }
   }
 
   return (
@@ -47,7 +53,7 @@ const Login: React.FC = () => {
                 handleForm({value: e.target.value, type: 'password'})}
             />
           </form>
-          <SubmitButton onClick={() => handleSubmit}>
+          <SubmitButton onClick={handleSubmit}>
             <h2>Enter</h2>
           </SubmitButton>
           <RegisterButton>
