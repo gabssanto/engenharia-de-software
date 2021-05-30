@@ -35,8 +35,9 @@ export const Card = styled.div`
     border-radius: 4px;
     font-size: 16px;
   }
-  input:last-of-type {
+  input:nth-child(2n) {
     margin-top: 8px;
+    margin-bottom: 8px;
   }
 `;
 

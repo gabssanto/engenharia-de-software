@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 
 import api from "../../api";
 
@@ -56,9 +56,11 @@ const Login: React.FC = () => {
           <SubmitButton onClick={handleSubmit}>
             <h2>Enter</h2>
           </SubmitButton>
-          <RegisterButton>
-            <h3>Sign Up</h3>
-          </RegisterButton>
+            <Link to='/signUp'>
+              <RegisterButton style={{ width: '100%' }}>
+                <h3>Sign Up</h3>
+              </RegisterButton>
+            </Link>
         </Card>
       </Container>
   );
