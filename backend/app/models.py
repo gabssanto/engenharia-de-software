@@ -1,28 +1,29 @@
 from datetime import datetime
 from app import db
 
-userInProject = db.Table('userInProject',
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-    db.Column('projeto_id', db.Integer, db.ForeignKey('projeto.id'), primary_key=True),
-    db.Column('permissao_id', db.Integer, db.ForeignKey('permissao.id'), primary_key=True)
-)
+
+class UserInProject(db.Model):
+    __tablename__ = 'userInProject'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
+    permission_id = db.Column(db.Integer, db.ForeignKey('permission.id'))
 
 
 class User(db.Model):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password = db.Column(db.String(128))
-    inPermission = db.relationship('permissao', secondary=userInProject, lazy='subquery',
-                                   backref=db.backref('permUser', lazy='dynamic'))
-    inProject = db.relationship('projeto', secondary=userInProject, lazy='subquery',
-                                backref=db.backref('projectUser', lazy='dynamic'))
+    userInProject = db.relationship('UserInProject', backref=db.backref('userInProject', uselist=False))
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
 
-class permissao(db.Model):
+class Permission(db.Model):
+    __tablename__ = 'permission'
     id = db.Column(db.Integer, primary_key=True)
     moderator = db.Column(db.Boolean, index=True)
     add_user = db.Column(db.String(64))
@@ -32,34 +33,38 @@ class permissao(db.Model):
         return '<perm {}>'.format(self.moderator)
 
 
-class projeto(db.Model):
+class Project(db.Model):
+    __tablename__ = 'project'
     id = db.Column(db.Integer, primary_key=True)
-    chats = db.relationship('chat', backref='projeto', lazy=True)
+    chats = db.relationship('Chat', backref=db.backref('chat', uselist=False), lazy=True)
 
     def __repr__(self):
-        return '<projeto {}>'.format(self.id)
+        return '<Project {}>'.format(self.id)
 
 
-class chat(db.Model):
+class Chat(db.Model):
+    __tablename__ = 'chat'
     id = db.Column(db.Integer, primary_key=True)
-    historico = db.Column(db.String(45), index=True)
-    projeto_id = db.Column(db.Integer, db.ForeignKey('projeto.id'),
+    history = db.Column(db.String(), index=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'),
                            nullable=False)
 
 
 class Kanban(db.Model):
+    __tablename__ = 'kanban'
     id = db.Column(db.Integer, primary_key=True)
-    KanbanItens = db.relationship('kanbanItem', backref='kanban', lazy=True)
+    kanban_items = db.relationship('KanbanItem', backref=db.backref('kanban', uselist=False), lazy=True)
 
     def __repr__(self):
         return '<Kanban {}>'.format(self.body)
 
 
-class kanbanItem(db.Model):
+class KanbanItem(db.Model):
+    __tablename__ = 'kanbanItem'
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(45), nullable=False)
-    descricao = db.Column(db.Text, index=True)
-    posicao = db.Column(db.String(10))
+    description = db.Column(db.Text, index=True)
+    position = db.Column(db.String(10))
     kanban_id = db.Column(db.Integer, db.ForeignKey('kanban.id'),
                           nullable=False)
 
