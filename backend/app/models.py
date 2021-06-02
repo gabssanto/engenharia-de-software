@@ -1,5 +1,5 @@
 from datetime import datetime
-from backend.app import db
+from app import db
 
 userInProject = db.Table('userInProject',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
