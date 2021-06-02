@@ -38,3 +38,33 @@ class projeto(db.Model):
 
     def __repr__(self):
         return '<projeto {}>'.format(self.id)
+    
+class chat(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    historico = db.Column(db.String(45), index=True)
+    projeto_id = db.Column(db.Integer, db.ForeignKey('projeto.id'),
+                           nullable=False)
+
+
+class Kanban(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    KanbanItens = db.relationship('kanbanItem', backref='kanban', lazy=True)
+
+    def __repr__(self):
+        return '<Kanban {}>'.format(self.body)
+
+
+class kanbanItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(45), nullable=False)
+    descricao = db.Column(db.Text, index=True)
+    posicao = db.Column(db.String(10))
+    kanban_id = db.Column(db.Integer, db.ForeignKey('kanban.id'),
+                          nullable=False)
+
+    def __repr__(self):
+        return '<Kanban {}>'.format(self.body)
+    
+    
+    
+    
