@@ -71,6 +71,7 @@ def post(db, data: dict):
     except NoResultFound:
         return {'message': 'user not found'}, 400
 
+
 # TODO improve update with validations to update only needed
 def update(db, data):
     try:

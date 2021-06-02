@@ -22,12 +22,14 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
+    if (form.email === '' || form.password === '') return;
+
     const response = await api.post('/user', {
       type: 'login',
       email: form.email,
       password: form.password,
     });
-    if (response.data.email === form.email) {
+    if (response.status === 200 && response.data.email === form.email) {
       localStorage.setItem('user', JSON.stringify(response.data));
       history.push('/home');
     }

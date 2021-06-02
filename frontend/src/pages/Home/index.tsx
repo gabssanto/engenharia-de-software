@@ -35,7 +35,7 @@ const Home: React.FC = () => {
        </MessagesContainerHeader>
       </MessagesContainer>
       <OpenedMessage>
-        {activeTab === 'profile' ? <Profile user={user} /> : (
+        {activeTab === 'profile' ? <Profile user={user} setActiveTab={() => setActiveTab('chat')} /> : (
           <>
             <OpenedMessageHeader>
               <div>groupName</div>
