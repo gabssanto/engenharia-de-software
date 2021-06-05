@@ -4,8 +4,8 @@ from flask import request
 from flask_cors import CORS
 
 from app import app, db
-from app.controllers import user_controller, kanban_controller
-
+from app.controllers import user_controller, kanban_controller, project_controller
+from app.models import UserInProject, User, Project
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -17,15 +17,57 @@ def users():
 
 @app.route('/user', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def user():
-    data: dict = json.loads(request.data)
-    if request.method == 'POST':
-        return user_controller.post(db, data)
-    elif request.method == 'DELETE':
-        return user_controller.delete(db, data)
-    elif request.method == 'PUT':
-        return user_controller.update(db, data)
-    return user_controller.get(db, data)
+    try:
+        if request.data:
+            data: dict = json.loads(request.data)
+            if request.method == 'POST':
+                return user_controller.post(db, data)
+            elif request.method == 'DELETE':
+                return user_controller.delete(db, data)
+            elif request.method == 'PUT':
+                return user_controller.update(db, data)
+            return user_controller.get(db, data)
+        raise AttributeError
+    except AttributeError:
+        return 'body does not contain data'
 
+
+@app.get('/projects')
+def projects():
+    return project_controller.get_all(db)
+
+
+@app.route('/project', methods=['GET', 'POST'])
+def project():
+    try:
+        if request.data:
+            data: dict = json.loads(request.data)
+            if request.method == 'GET':
+                return project_controller.get(db, data)
+            elif request.method == 'POST':
+                return project_controller.post(db, data)
+        raise AttributeError
+    except AttributeError:
+        return 'body does not contain data'
+
+
+@app.post('/projectsByUser')
+def projects_by_user():
+    data: dict = json.loads(request.data)
+    q_user = db.session.query(User).filter_by(email=data['email']).first()
+    if q_user is None:
+        raise AttributeError
+    user_in_project = db.session.query(UserInProject).filter_by(user_id=q_user.id).all()
+    projectByUser = []
+    for i in user_in_project:
+        q_project = db.session.query(Project).filter_by(id=i.project_id).first()
+        projectByUser.append({
+            'name': q_project.name,
+            'history': q_project.history,
+        })
+    return {
+        'projects': projectByUser
+    }
 
 # TODO: Add model, controllers and routes to kanban
 @app.route('/kanban', methods=['GET'])

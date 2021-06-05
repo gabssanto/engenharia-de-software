@@ -13,29 +13,41 @@ import {
   OpenedMessageHeader,
 } from './styles';
 import Profile from './Profile';
+import { MdAddCircle } from 'react-icons/md';
+import GroupsPage from './GroupsPage';
+import api from '../../api';
 
 const Home: React.FC = () => {
   const [activeTab, setActiveTab] = useState('chat');
-  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  const [user, setUser] = useState<any>(null);
+  const [projects, setProjects] = useState<any>(null);
   const history = useHistory();
 
-  if (!user) history.push('/');
+  useEffect(() => {
+    const localUser = JSON.parse(localStorage.getItem('user') || 'null')
+    setUser(localUser);
+    if (!localUser) history.push('/');
+    // TODO beleza, to recebendo os projetos certinho, agora preciso adicionar o front pra isso 
+    api.post('/projectsByUser', {
+      email: localUser.email,
+    }).then(e => setProjects(e.data.projects))
+  }, []);
 
   const handleLogout = () => {
     localStorage.setItem('user', '');
     history.push('/')
   }
 
-  return (
-    <Container>
-      <MessagesContainer>
-        <MessagesContainerHeader onClick={() => setActiveTab('profile')}>
-          {user.name}
-          <Logout onClick={handleLogout}>logout</Logout>
-       </MessagesContainerHeader>
-      </MessagesContainer>
-      <OpenedMessage>
-        {activeTab === 'profile' ? <Profile user={user} setActiveTab={() => setActiveTab('chat')} /> : (
+  console.log(projects)
+
+  const renderPage = () => {
+    switch (activeTab) {
+      case 'profile':
+        return <Profile user={user} setActiveTab={() => setActiveTab('chat')} />;
+      case 'groupsPage':
+        return <GroupsPage closeTab={() => setActiveTab('chat')} />;
+      default:
+        return (
           <>
             <OpenedMessageHeader>
               <div>groupName</div>
@@ -48,8 +60,24 @@ const Home: React.FC = () => {
             </NavBar>
             {activeTab === 'kanban' && <Kanban />}
           </>
-        )}
-      </OpenedMessage>
+        );
+    }
+  }
+
+  return (
+    <Container>
+      <MessagesContainer>
+        <MessagesContainerHeader>
+          <div onClick={() => setActiveTab('profile')}>
+            {user && user.name}
+          </div>
+          <div style={{ display: 'inline-flex' }}>
+            <Logout onClick={handleLogout}>logout</Logout>
+            <MdAddCircle size={36} color="#54A0F8" onClick={() => setActiveTab('groupsPage')} style={{cursor: 'pointer', marginLeft: '10px'}} />
+          </div>
+       </MessagesContainerHeader>
+      </MessagesContainer>
+      <OpenedMessage>{renderPage()}</OpenedMessage>
     </Container>
   );
 }
