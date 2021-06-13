@@ -11,26 +11,41 @@ import {
   OpenedMessage,
   Logout,
   OpenedMessageHeader,
+  ProjectsListContainer,
+  ProjectListItem,
+  EmptyProjectsList,
+  NoActiveProject
 } from './styles';
+import Chat from './Chat';
 import Profile from './Profile';
+import ProjectInfo from './ProjectInfo';
 import { MdAddCircle } from 'react-icons/md';
 import GroupsPage from './GroupsPage';
 import api from '../../api';
+import { v4 } from 'uuid';
 
 const Home: React.FC = () => {
   const [activeTab, setActiveTab] = useState('chat');
   const [user, setUser] = useState<any>(null);
-  const [projects, setProjects] = useState<any>(null);
+  const [projects, setProjects] = useState<any>([]);
+  const [selectedProject, setSelectedProject] = useState<any>(null);
   const history = useHistory();
 
   useEffect(() => {
     const localUser = JSON.parse(localStorage.getItem('user') || 'null')
     setUser(localUser);
     if (!localUser) history.push('/');
-    // TODO beleza, to recebendo os projetos certinho, agora preciso adicionar o front pra isso 
     api.post('/projectsByUser', {
       email: localUser.email,
-    }).then(e => setProjects(e.data.projects))
+    }).then(e => {
+      let tempProjects: any = []
+      e.data.projects.map((project: any) => {
+        if (!tempProjects.find((p: any) => p.name === project.name)) {
+          tempProjects.push(project)
+        }
+      })
+      setProjects(tempProjects)
+    })
   }, []);
 
   const handleLogout = () => {
@@ -40,6 +55,29 @@ const Home: React.FC = () => {
 
   console.log(projects)
 
+  const renderProjectPage = () => {
+    if (!selectedProject) return (
+      <NoActiveProject>
+        <h1>No active Project, select a project or create a new one</h1>
+      </NoActiveProject>
+    );
+    return (
+      <>
+        <OpenedMessageHeader>
+          <div>{selectedProject.name}</div>
+        </OpenedMessageHeader>
+        <NavBar>
+          <NavBarItem active={activeTab === 'chat'} onClick={() => setActiveTab('chat')}>Chat</NavBarItem>
+          <NavBarItem active={activeTab === 'kanban'} onClick={() => setActiveTab('kanban')}>Kanban</NavBarItem>
+          <NavBarItem active={activeTab === 'info'} onClick={() => setActiveTab('info')}>Info</NavBarItem>
+        </NavBar>
+        {activeTab === 'kanban' && <Kanban />}
+        {activeTab === 'info' && <ProjectInfo users={selectedProject.users} />}
+        {activeTab === 'chat' && <Chat chatHistory={selectedProject.history} />}
+      </>
+    );
+  }
+
   const renderPage = () => {
     switch (activeTab) {
       case 'profile':
@@ -47,21 +85,23 @@ const Home: React.FC = () => {
       case 'groupsPage':
         return <GroupsPage closeTab={() => setActiveTab('chat')} />;
       default:
-        return (
-          <>
-            <OpenedMessageHeader>
-              <div>groupName</div>
-              <div>role</div>
-            </OpenedMessageHeader>
-            <NavBar>
-              <NavBarItem active={activeTab === 'chat'} onClick={() => setActiveTab('chat')}>Chat</NavBarItem>
-              <NavBarItem active={activeTab === 'kanban'} onClick={() => setActiveTab('kanban')}>Kanban</NavBarItem>
-              <NavBarItem active={activeTab === 'info'} onClick={() => setActiveTab('info')}>Info</NavBarItem>
-            </NavBar>
-            {activeTab === 'kanban' && <Kanban />}
-          </>
-        );
+        return renderProjectPage();
     }
+  }
+
+  const renderProjectList = () => {
+    if (projects.length === 0) return (
+      <EmptyProjectsList>
+        No Projects yet
+      </EmptyProjectsList>
+    )
+    return <ProjectsListContainer>
+      {projects.map((project: any) => (
+      <ProjectListItem key={v4()} onClick={() => setSelectedProject(project)}>
+        {project.name}
+      </ProjectListItem>
+    ))}
+    </ProjectsListContainer>
   }
 
   return (
@@ -75,7 +115,8 @@ const Home: React.FC = () => {
             <Logout onClick={handleLogout}>logout</Logout>
             <MdAddCircle size={36} color="#54A0F8" onClick={() => setActiveTab('groupsPage')} style={{cursor: 'pointer', marginLeft: '10px'}} />
           </div>
-       </MessagesContainerHeader>
+        </MessagesContainerHeader>
+        {renderProjectList()}
       </MessagesContainer>
       <OpenedMessage>{renderPage()}</OpenedMessage>
     </Container>

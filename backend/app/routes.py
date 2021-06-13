@@ -61,9 +61,18 @@ def projects_by_user():
     projectByUser = []
     for i in user_in_project:
         q_project = db.session.query(Project).filter_by(id=i.project_id).first()
+        q_users_in_project = db.session.query(UserInProject).filter_by(project_id=i.project_id).all()
+        user_id_list = []
+        for j in q_users_in_project:
+            q_user = db.session.query(User).filter_by(id=j.user_id).first()
+            user_id_list.append({
+                'username': q_user.username,
+                'email': q_user.email,
+            })
         projectByUser.append({
             'name': q_project.name,
             'history': q_project.history,
+            'users': user_id_list
         })
     return {
         'projects': projectByUser

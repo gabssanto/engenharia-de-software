@@ -15,7 +15,7 @@ export const MessagesContainer = styled.div`
 export const Logout = styled.div`
   color: white;
   border-radius: 4px;
-  background-color: rgb(241,101,34);
+  background-color: #E63946;
   padding: 8px 16px;
   cursor: pointer;
 `;
@@ -26,7 +26,8 @@ export const MessagesContainerHeader = styled.div`
   padding: 0 20px;
   height: 10vh;
   width: inherit;
-  background-color: white;
+  background-color: #272742;
+  color: white;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -45,7 +46,8 @@ export const OpenedMessageHeader = styled.div`
   padding: 0 20px;
   height: 5vh;
   width: inherit;
-  background-color: white;
+  background-color: #272742;
+  color: white;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -77,4 +79,54 @@ export const NavBarItem = styled.a<NavBarItemProps>`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+export const EmptyProjectsList = styled.div`
+  background-color: #fff;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+`;
+
+export const ProjectsListContainer = styled.div`
+  background-color: #fff;
+  font-weight: bold;
+  display: flex;
+  height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  div:nth-child(2n) {
+    border-bottom: 1px solid #333;
+    border-top: 1px solid #333;
+  }
+  div:last-of-type {
+    border-bottom: 1px solid #333;
+  }
+`;
+
+export const ProjectListItem = styled.div`
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 16px;
+  word-break: break-all;
+
+  &:hover {
+    background-color: #eee;
+    cursor: pointer;
+  }
+`;
+
+export const NoActiveProject = styled.div`
+  background-color: white;
+  height: 100vh;
+  border-left: 1px solid #aaa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+
 `;
