@@ -39,12 +39,19 @@ export const Messages = styled.div`
     background-color: #eee;
     height: 90vh;
     width: 100%;
+    overflow: auto;
 `;
 
 export const MessageWrapper = styled.div`
     width: 100%;
     display: flex;
     justify-content: flex-end;
+`;
+
+export const ReceivedMessageWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
 `;
 
 export const ReceivedMessage = styled.div`
@@ -75,4 +82,12 @@ export const MyMessage = styled.div`
     margin-left: 16px;
     color: white;
     padding: 8px 16px;
+`;
+
+export const Button = styled.button.attrs({
+  type: 'submit',
+})
+`
+  border: none;
+  background-color: white;
 `;

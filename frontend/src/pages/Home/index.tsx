@@ -31,7 +31,7 @@ const Home: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const history = useHistory();
 
-  useEffect(() => {
+  const apiHelper = () => {
     const localUser = JSON.parse(localStorage.getItem('user') || 'null')
     setUser(localUser);
     if (!localUser) history.push('/');
@@ -46,6 +46,10 @@ const Home: React.FC = () => {
       })
       setProjects(tempProjects)
     })
+  }
+
+  useEffect(() => {
+    apiHelper();
   }, []);
 
   const handleLogout = () => {
@@ -53,7 +57,7 @@ const Home: React.FC = () => {
     history.push('/')
   }
 
-  console.log(projects)
+  // console.log(projects)
 
   const renderProjectPage = () => {
     if (!selectedProject) return (
@@ -73,7 +77,12 @@ const Home: React.FC = () => {
         </NavBar>
         {activeTab === 'kanban' && <Kanban />}
         {activeTab === 'info' && <ProjectInfo users={selectedProject.users} />}
-        {activeTab === 'chat' && <Chat chatHistory={selectedProject.history} />}
+        {activeTab === 'chat' && <Chat
+          chatHistory={selectedProject.history}
+          apiHelper={() => apiHelper()}
+          user={user}
+          projectId={selectedProject.id}
+        />}
       </>
     );
   }
