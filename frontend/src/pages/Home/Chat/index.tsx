@@ -100,9 +100,9 @@ const Chat: React.FC<Props> = ({ chatHistory, apiHelper, user, projectId }) => {
                     }}
                 />
             </Messages>
-            <MessageContainer>
+            <MessageContainer onSubmit={(e) => handleClick(e)}>
                 <Input value={message} onChange={(e) => setMessage(e.target.value)} />
-                <Button type='submit' onClick={(e) => handleClick(e)}>
+                <Button type='submit'>
                     <MdPlayCircleFilled
                         size={40}
                         style={{ color: '#E63946', cursor: 'pointer' }}

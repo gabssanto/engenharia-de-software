@@ -9,7 +9,7 @@ export const Container = styled.div`
   height: 90vh;
 `;
 
-export const MessageContainer = styled.div`
+export const MessageContainer = styled.form`
     height: 5vh;
     width: 100%;
     background-color: white;
