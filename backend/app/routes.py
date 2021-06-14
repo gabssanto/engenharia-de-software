@@ -70,6 +70,7 @@ def projects_by_user():
                 'email': q_user.email,
             })
         projectByUser.append({
+            'id': q_project.id,
             'name': q_project.name,
             'history': q_project.history,
             'users': user_id_list
@@ -77,6 +78,36 @@ def projects_by_user():
     return {
         'projects': projectByUser
     }
+
+
+@app.post('/newMessage')
+def new_message():
+    try:
+        data: dict = json.loads(request.data)
+        q_project = db.session.query(Project).filter_by(id=data['id']).first()
+
+        history_json = json.loads(q_project.history if len(q_project.history) > 0 else '[]')
+        history_json.append({
+            'email': data['email'],
+            'message': data['message']
+        })
+
+        q_project.history = json.dumps(history_json)
+        db.session.commit()
+        return {'history': history_json}
+    except json.decoder.JSONDecodeError:
+        return {'message': 'Bad request, no body provided'}, 400
+
+
+@app.post('/messagesByProject')
+def messages_by_project():
+    try:
+        data: dict = json.loads(request.data)
+        q_project = db.session.query(Project).filter_by(id=data['id']).first()
+        return {'history': q_project.history}
+    except json.decoder.JSONDecodeError:
+        return {'message': 'Bad request, no body provided'}, 400
+
 
 # TODO: Add model, controllers and routes to kanban
 @app.route('/kanban', methods=['GET'])
