@@ -35,20 +35,8 @@ class Project(db.Model):
 class Kanban(db.Model):
     __tablename__ = 'kanban'
     id = db.Column(db.Integer, primary_key=True)
-    kanban_items = db.relationship('KanbanItem', backref=db.backref('kanbanItem', uselist=False), lazy=True)
+    project_id = db.Column(db.Integer, unique=True)
+    kanban_items = db.Column(db.String)
 
     def __repr__(self):
         return '<Kanban {}>'.format(self.kanban_items)
-
-
-class KanbanItem(db.Model):
-    __tablename__ = 'kanbanItem'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(45), nullable=False)
-    description = db.Column(db.Text, index=True)
-    position = db.Column(db.String(10))
-    kanban_id = db.Column(db.Integer, db.ForeignKey('kanban.id'),
-                          nullable=False)
-
-    def __repr__(self):
-        return '<Kanban {}>'.format(self.id)

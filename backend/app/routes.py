@@ -109,8 +109,11 @@ def messages_by_project():
         return {'message': 'Bad request, no body provided'}, 400
 
 
-# TODO: Add model, controllers and routes to kanban
-@app.route('/kanban', methods=['GET'])
+@app.route('/kanbanByProject', methods=['POST'])
 def kanban():
-    json_data: dict = json.loads(request.data)
-    return kanban_controller.get(db, json_data)
+    try:
+        if request.method == 'POST':
+            data: dict = json.loads(request.data)
+            return kanban_controller.post(db, data)
+    except json.decoder.JSONDecodeError:
+        return {'message': 'Bad request, no body provided'}, 400
