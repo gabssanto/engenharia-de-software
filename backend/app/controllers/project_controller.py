@@ -46,15 +46,15 @@ def post(db, data: dict):
             db.session.add(user_in_project)
             db.session.commit()
             return {'message': 'Project Created'}, 200
-        elif data['type'] == 'enter':
-            project = db.session.query(Project).filter_by(name=data['name']).first()
-            user = db.session.query(User).filter_by(email=data['email']).first()
-            user_joined =  db.session.query(UserInProject).filter_by(user_id=user.id, project_id=project.id)
-            if user_joined is None:
-                user_in_project = UserInProject(user_id=user.id, project_id=project.id)
-                db.session.add(user_in_project)
-                db.session.commit()
-                return {'message': 'Entered in Project'}, 200
+        project = db.session.query(Project).filter_by(name=data['name']).first()
+        user = db.session.query(User).filter_by(email=data['email']).first()
+        user_joined =  db.session.query(UserInProject).filter_by(user_id=user.id, project_id=project.id).first()
+        if user_joined is None:
+            user_in_project = UserInProject(user_id=user.id, project_id=project.id)
+            db.session.add(user_in_project)
+            db.session.commit()
+            return {'message': 'Entered in Project'}, 200
+        return {'message': 'Success'}
     except IntegrityError:
         return {'message': 'Project Name must be unique or User already in Project'}
     except AttributeError:

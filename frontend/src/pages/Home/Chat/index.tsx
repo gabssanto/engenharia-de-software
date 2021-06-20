@@ -38,10 +38,15 @@ const Chat: React.FC<Props> = ({ chatHistory, apiHelper, user, projectId }) => {
         const history = await api.post('/messagesByProject', {
             id: projectId,
         })
+        console.log('here');
 
         setChat(JSON.parse(history.data.history || '[]'));
-        messagesRef.current.scrollIntoView({behavior: "smooth"})
+        messagesRef.current.scrollIntoView({ behavior: "smooth" })
     }
+
+    useEffect(() => {
+        setInterval(() => getProject(), 1000);
+    }, [])
 
     useEffect(() => {
         getProject();
@@ -50,7 +55,7 @@ const Chat: React.FC<Props> = ({ chatHistory, apiHelper, user, projectId }) => {
     const handleClick = async (e: any) => {
         e.preventDefault();
         if (message.length <= 0) return;
-            
+
         await api.post('/newMessage', {
             "id": projectId,
             "email": user.email,
@@ -58,17 +63,17 @@ const Chat: React.FC<Props> = ({ chatHistory, apiHelper, user, projectId }) => {
         })
 
         apiHelper();
-        
+
         setMessage('')
-        
+
         const history = await api.post('/messagesByProject', {
             id: projectId,
         })
 
         setChat(JSON.parse(history.data.history));
-        messagesRef.current.scrollIntoView({behavior: "smooth"})
+        messagesRef.current.scrollIntoView({ behavior: "smooth" })
     }
-    
+
     return (
         <Container>
             <Messages>
