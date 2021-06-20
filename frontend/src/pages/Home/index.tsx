@@ -75,7 +75,9 @@ const Home: React.FC = () => {
           <NavBarItem active={activeTab === 'kanban'} onClick={() => setActiveTab('kanban')}>Kanban</NavBarItem>
           <NavBarItem active={activeTab === 'info'} onClick={() => setActiveTab('info')}>Info</NavBarItem>
         </NavBar>
-        {activeTab === 'kanban' && <Kanban />}
+        {activeTab === 'kanban' && <Kanban
+          projectId={selectedProject.id}
+        />}
         {activeTab === 'info' && <ProjectInfo users={selectedProject.users} />}
         {activeTab === 'chat' && <Chat
           chatHistory={selectedProject.history}

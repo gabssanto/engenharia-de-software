@@ -1,5 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { MdAddCircle, MdClose } from "react-icons/md";
+import { flatten } from 'lodash'
 import {
   Container,
   Header,
@@ -18,6 +19,7 @@ import {
   ModalTitleInput
 } from './styles';
 import { v4 as uuid } from 'uuid';
+import api from '../../../api';
 
 interface KanbanItemType {
   id: string;
@@ -26,21 +28,50 @@ interface KanbanItemType {
   position: string;
 }
 
-const Kanban: React.FC = () => {
+interface Props {
+  projectId: string;
+}
+
+const Kanban: React.FC<Props> = ({projectId}) => {
   const [kanbanItems, setKanbanItems] = useState<KanbanItemType[]>([]);
   const [isModalOpen, setModalOpen] = useState<KanbanItemType | null>(null);
 
+  const getKanbanUpdates = async () => {
+    const kanbanReq = await api.post('/kanbanByProject', {
+      id: projectId,
+      type: 'get'
+    })
+    const items = JSON.parse(kanbanReq.data)
+    setKanbanItems(flatten(items));
+  }
+
+  useEffect(() => {
+    getKanbanUpdates();
+  }, [])
+
   const handleAddItem = useCallback(() => {
-    setKanbanItems([...kanbanItems, { id: uuid(), title: 'New Item', description: '', position: 'TODO'}])
+    const updatedItems = [...kanbanItems, { id: uuid(), title: 'New Item', description: '', position: 'TODO' }];
+    api.post('/kanbanByProject', {
+      id: projectId,
+      items: JSON.stringify(updatedItems),
+      type: 'post'
+    })
+    setKanbanItems(updatedItems)
   }, [kanbanItems]);
 
   const handleSaveModal = useCallback(() => {
     const arr = [...kanbanItems];
     if (isModalOpen) {
-      setKanbanItems(arr.map(item => {
+      const updatedItems = arr.map(item => {
         if (item.id === isModalOpen.id) return isModalOpen;
         return item;
-      }));
+      })
+      api.post('/kanbanByProject', {
+        id: projectId,
+        items: JSON.stringify(updatedItems),
+        type: 'post'
+      })
+      setKanbanItems(updatedItems);
       setModalOpen(null);
     }
   }, [kanbanItems, isModalOpen]);

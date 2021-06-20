@@ -32,16 +32,15 @@ interface Message {
 const Chat: React.FC<Props> = ({ chatHistory, apiHelper, user, projectId }) => {
     const [chat, setChat] = useState<Message[]>(JSON.parse(chatHistory !== '' ? chatHistory : '[]'));
     const [message, setMessage] = useState('');
-    const messagesRef = useRef<any>();
+    const messagesRef = useRef<any>(null);
 
     const getProject = async () => {
         const history = await api.post('/messagesByProject', {
             id: projectId,
         })
-        console.log('here');
 
         setChat(JSON.parse(history.data.history || '[]'));
-        messagesRef.current.scrollIntoView({ behavior: "smooth" })
+        if (messagesRef !== null && messagesRef.current !== null) messagesRef.current.scrollIntoView({ behavior: "smooth" })
     }
 
     useEffect(() => {
@@ -71,7 +70,7 @@ const Chat: React.FC<Props> = ({ chatHistory, apiHelper, user, projectId }) => {
         })
 
         setChat(JSON.parse(history.data.history));
-        messagesRef.current.scrollIntoView({ behavior: "smooth" })
+        if (messagesRef !== null && messagesRef.current !== null) messagesRef.current.scrollIntoView({ behavior: "smooth" })
     }
 
     return (
