@@ -5,10 +5,11 @@ import api from '../../../api';
 import { Container, Input, PrimaryButton } from './styles';
 
 interface Props {
+    apiHelper: Function;
     closeTab: () => void;
 }
 
-const GroupsPage: React.FC<Props> = ({ closeTab }) => {
+const GroupsPage: React.FC<Props> = ({ apiHelper, closeTab }) => {
     const [form, setForm] = useState({
         create: '',
         enter: '',
@@ -24,6 +25,7 @@ const GroupsPage: React.FC<Props> = ({ closeTab }) => {
             name: form.create,
             email: user.email
         });
+        apiHelper();
     }
 
     const handleEnterInProject = async (e: any) => {
@@ -35,6 +37,7 @@ const GroupsPage: React.FC<Props> = ({ closeTab }) => {
             name: form.enter,
             email: user.email
         })
+        apiHelper()
     }
 
     return (

@@ -94,7 +94,7 @@ const Home: React.FC = () => {
       case 'profile':
         return <Profile user={user} setActiveTab={() => setActiveTab('chat')} />;
       case 'groupsPage':
-        return <GroupsPage closeTab={() => setActiveTab('chat')} />;
+        return <GroupsPage apiHelper={() => apiHelper()} closeTab={() => setActiveTab('chat')} />;
       default:
         return renderProjectPage();
     }
